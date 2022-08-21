@@ -1,0 +1,14 @@
+<mat-dialog-content>
+ <div style="text-align:center;">
+  <apx-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [xaxis]="chartOptions.xaxis"
+    [title]="chartOptions.title"
+  ></apx-chart>
+</div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <button class="mat-raised-button" (click)="closeDialog()">Close</button>
+</mat-dialog-actions>

@@ -1,0 +1,48 @@
+<!-- <div [@routerTransition]> -->
+    <!-- <app-page-header [heading]="'Tables'" [icon]="'fa-table'"></app-page-header> -->
+    <div class="card">
+            <!-- <div class="h5">Intraday Position</div> -->
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Instrument</th>
+                        <th> Quantity</th>
+                        <th>BuyAvg Price</th>
+                        <th>SellAvg Price</th>
+                        <th>LTP</th>
+                        <!-- <th>Buy Value</th>
+                        <th>Sell Value</th> -->
+                        <th> P&L</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of getNetPosition" [ngStyle]="{'background-color':item.netQty <= 0 ? 'white':'lightgreen'}">
+                        <!-- *ngIf="item.netQty!=0" -->
+                        <ng-container >
+                        <td><b>{{ item.scripName }}</b></td>
+                        <td >{{ item.netQty }}</td>
+                        <td>{{ item.buyAvgRate }}</td>
+                        <td>{{ item.sellAvgRate }}</td>
+                        <td>{{ item.ltp }}</td>
+                        <!-- <td>{{ item.buyValue }}</td>
+                        <td>{{ item.sellValue }}</td> -->
+                        <td>{{ item.bookedPL  }} | {{percentageOfProfit}} % </td>
+                        <!-- [ngClass]="{'disabled':item.netQty == '0'}" *ngIf="item.netQty!=0" -->
+                        <!-- <td class="custom-slider"  style="width: 55%;">
+                            <ngx-slider
+                            [(value)]="item.slider.minValue"
+                            [(highValue)]="item.slider.maxValue"
+                            [options]="item.slider"
+                            (userChangeEnd)="onUserChangeEnd($event,item)">
+                            </ngx-slider>
+                        </td>-->
+                    </ng-container>
+                    </tr>
+                    <tr>
+                        <td colspan="5"><b>Total</b></td>
+                        <td colspan="2">{{ totalProfitAndLoss }}</td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>

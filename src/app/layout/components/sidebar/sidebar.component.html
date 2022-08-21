@@ -1,0 +1,150 @@
+<nav [ngClass]="{ sidebarPushRight: isActive, collapsed: collapsed }" class="sidebar">
+
+    <table mat-table [dataSource]="dataSource" matSortActive="percentageOfProfit" matSort matSortDirection="desc" #positionSort="matSort"  style="width: 100%; overflow: auto;">
+        <!-- <ng-container matColumnDef="index">
+          <mat-header-cell *matHeaderCellDef> Index </mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index;">{{i}}</mat-cell>
+        </ng-container> -->
+        <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+              <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                            [checked]="selection.hasValue() && isAllSelected()"
+                            [indeterminate]="selection.hasValue() && !isAllSelected()"
+                            [aria-label]="checkboxLabel()">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()"
+                            (change)="$event ? selection.toggle(row) : null"
+                            [checked]="selection.isSelected(row)"
+                            [aria-label]="checkboxLabel(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+        <ng-container matColumnDef="scripName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.scripName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="OrderType">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >B/S </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.OrderType}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="netQty">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header>Quantity </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.netQty}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="ltp">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header>ltp </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.ltp}}
+            </td>
+          </ng-container>
+        <ng-container matColumnDef="percentageOfProfit">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header>% Of PnL </th>
+          <td mat-cell *matCellDef="let element">
+             {{element.percentageOfProfit}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="bookedPL">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header>BookedPL </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.bookedPL}}
+            </td>
+          </ng-container>
+
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action  </th>
+            <td mat-cell *matCellDef="let element">
+                <button  mat-mini-fab color="primary"> <mat-icon>visibility</mat-icon></button>
+                <button  mat-mini-fab color="primary">Swap </button>
+                <button mat-mini-fab (click)="addStopLoss(item.scripCode,item.ltp,item.OrderType,item.netQty)"  mat-button color="primary"> SL</button>
+                <button mat-mini-fab (click)="addStopLoss(item)"  mat-button color="primary"> Add</button>
+                <button (click)="trailStopLossOrder(item)"  mat-mini-fab color="primary"> Sub.</button>
+
+
+                <button (click)="exitPosition(item)" mat-mini-fab color="primary"> <mat-icon>close</mat-icon></button>
+
+            </td>
+          </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
+
+      </table>
+      <table mat-table [dataSource]="dataSourceOrder" matSortActive="brokerOrderTime" matSort matSortDirection="desc" #orderSort="matSort" style="width: 100%; overflow: auto;">
+        <!-- <ng-container matColumnDef="index">
+          <mat-header-cell *matHeaderCellDef> Index </mat-header-cell>
+          <mat-cell *matCellDef="let element; let i = index;">{{i}}</mat-cell>
+        </ng-container> -->
+        <ng-container matColumnDef="scripName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.scripName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="buySell">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header >B/S </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.buySell}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header>Quantity </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.pendingQty}} | {{element.qty}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="slTriggerRate">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header>SlTriggerRate </th>
+            <td mat-cell *matCellDef="let element">
+                {{element.rate}} | {{element.slTriggerRate}}
+            </td>
+          </ng-container>
+        <ng-container matColumnDef="brokerOrderTime">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header>Time</th>
+          <td mat-cell *matCellDef="let element">
+             {{element.brokerOrderTime | date: 'h:mm a'}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="orderStatus">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header>Status </th>
+            <td mat-cell *matCellDef="let element" [ngClass]="element.orderStatus ==='Fully Executed' ? 'success' : ''">
+               {{element.orderStatus}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="reason">
+            <th mat-header-cell *matHeaderCellDef  mat-sort-header>Reason </th>
+            <td mat-cell *matCellDef="let element">
+               {{element.reason}}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action  </th>
+            <td mat-cell *matCellDef="let element">
+                <button (click)="trailStopLossOrder(item)"  mat-mini-fab color="primary">Trail</button>
+                <button (click)="ModifyOrderRequest(item)"  mat-mini-fab color="primary"> <mat-icon>edit</mat-icon></button>
+                <button (click)="CancelOrderRequest(item)" mat-mini-fab color="primary"> <mat-icon>close</mat-icon></button>
+            </td>
+          </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsOrders"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsOrders;" ></tr>
+      </table>
+
+    <div (click)="toggleCollapsed()" [ngClass]="{ collapsed: collapsed }" class="toggle-button">
+        <i class="fa fa-fw fa-angle-double-{{ collapsed ? 'right' : 'left' }}"></i>&nbsp;
+    </div>
+    <button (click)="playAudio()" >play</button>
+</nav>

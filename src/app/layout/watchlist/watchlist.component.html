@@ -1,0 +1,91 @@
+
+<mat-tab-group [selectedIndex]="tabNumber"
+(selectedTabChange)="onTabChange($event)" backgroundColor="accent">
+  <mat-tab *ngFor="let tab of tabs; let index = index" [label]="tab">
+    <table mat-table [dataSource]="dataSource" matSortActive="chgPcnt" matSort matSortDirection="desc"  style="height: 550px;width: 100%; overflow: auto;">
+      <!-- <ng-container matColumnDef="index">
+        <mat-header-cell *matHeaderCellDef> Index </mat-header-cell>
+        <mat-cell *matCellDef="let element; let i = index;">{{i}}</mat-cell>
+      </ng-container> -->
+      <ng-container matColumnDef="symbol">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
+        <td mat-cell *matCellDef="let element">
+          {{element.symbol}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="high">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header >Day High </th>
+          <td mat-cell *matCellDef="let element">
+              {{element.high}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="low">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header>Day low </th>
+          <td mat-cell *matCellDef="let element">
+              {{element.low}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="pClose">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header>PClose </th>
+          <td mat-cell *matCellDef="let element">
+              {{element.pClose}}
+          </td>
+        </ng-container>
+      <ng-container matColumnDef="lastRate">
+        <th mat-header-cell *matHeaderCellDef  mat-sort-header>Last Rate </th>
+        <td mat-cell *matCellDef="let element">
+          <b>  {{element.lastRate}} </b>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="chgPcnt">
+          <th mat-header-cell *matHeaderCellDef  mat-sort-header>ChgPcnt </th>
+          <td mat-cell *matCellDef="let element" [ngStyle]="{'color':element.chgPcnt < 0 ? 'red':'green'}">
+             <b> {{element.chgPcnt | number}} </b>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="chg">
+          <th mat-header-cell mat-sort-header *matHeaderCellDef>ChgPoint</th>
+          <td mat-cell *matCellDef="let element">
+            {{element.chg}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="buy">
+          <th mat-header-cell *matHeaderCellDef> Buy  </th>
+          <td mat-cell *matCellDef="let element">
+            <!-- <button mat-button color="success" (click)="buy(element)">Buy</button> -->
+            <button mat-mini-fab color="success"  (click)="buy(element)"> Buy</button>
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="sell">
+          <th mat-header-cell *matHeaderCellDef> Sell  </th>
+          <td mat-cell *matCellDef="let element">
+            <!-- <button mat-button color="warn" (click)="sell(element)">Sell</button> -->
+            <button mat-mini-fab color="warn"  (click)="sell(element)">Sell</button>
+
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="view">
+            <th mat-header-cell *matHeaderCellDef> Details  </th>
+            <td mat-cell *matCellDef="let element">
+              <button  mat-mini-fab color="primary"  (click)="openTempDialog(element)"> <mat-icon>visibility</mat-icon></button>
+            </td>
+          </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
+
+    </table>
+    <!-- <mat-paginator [pageSizeOptions]="[10, 20, 50]"  [pageSize]="50"
+                   showFirstLastButtons
+                   aria-label="Select page of periodic elements">
+    </mat-paginator> -->
+
+  </mat-tab>
+</mat-tab-group>
+<h3> <button mat-mini-fab color="success">{{totalShareinPositive}}  </button>    <button mat-mini-fab color="warn" > {{50 - totalShareinPositive}}</button> </h3>
+<!-- <mat-spinner [diameter]="diameter"></mat-spinner> -->
+
+

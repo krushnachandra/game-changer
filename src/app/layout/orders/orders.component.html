@@ -1,0 +1,42 @@
+    <!-- <app-page-header [heading]="'Tables'" [icon]="'fa-table'"></app-page-header> -->
+                <!-- <div class="h4">
+                   Orders
+                </div> -->
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <!-- <th>OrderId</th> -->
+                                <th>Instrument</th>
+                                <th>Qty</th>
+                                <th>PQty</th>
+                                <th>Rate</th>
+                                <th>SL</th>
+                                <th>B/S</th>
+                                <th>Status</th>
+                                <th>Time</th>
+                                <th>Reason</th>
+                                <th>Action</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr [ngClass]="{'table-success':item.orderStatus == 'Fully Executed'}" *ngFor="let item of OrderBookDetails">
+                                <!-- <td>{{item.exchOrderID}}</td> -->
+                                <td>{{item.scripName}}</td>
+                                <td>{{item.oldorderQty}}</td>
+                                <td>{{item.pendingQty}}</td>
+                                <td>{{item.rate}}</td>
+                                <td>{{item.slTriggerRate}}</td>
+                                <td>{{item.buySell}}</td>
+                                <td>{{item.orderStatus}}</td>
+                                <td>{{item.brokerOrderTime | date: 'h:mm a'}}</td>
+                                <td style="font-size: 10px; width: 20%;">{{item.reason}}</td>
+                                <td>
+                                <button (click)="ModifyOrderRequest(item)"  mat-mini-fab color="primary"> <mat-icon>edit</mat-icon></button>
+                                <button (click)="CancelOrderRequest(item)" mat-mini-fab color="primary"> <mat-icon>close</mat-icon></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
