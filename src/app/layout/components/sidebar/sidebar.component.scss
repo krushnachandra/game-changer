@@ -1,21 +1,21 @@
 $topnav-background-color: #fff;
+
 .sidebar {
     border-radius: 0;
     position: fixed;
     z-index: 1000;
-    top: 30px;
+    top: 40px;
     left: 235px;
     width: 50%;
     margin-left: -235px;
     // margin-bottom: 48px;
     border: none;
     border-radius: 0;
-    overflow-y: auto;
+    overflow-y: scroll;
     background-color: $topnav-background-color;
     bottom: 0;
-    overflow-x: hidden;
+    overflow-x: scroll;
     padding-bottom: 40px;
-    white-space: nowrap;
     -webkit-transition: all 0.2s ease-in-out;
     -moz-transition: all 0.2s ease-in-out;
     -ms-transition: all 0.2s ease-in-out;

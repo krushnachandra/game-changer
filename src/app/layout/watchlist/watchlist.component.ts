@@ -28,8 +28,7 @@ export class WatchlistComponent implements OnInit, AfterViewInit , OnDestroy {
 
     @ViewChild('chart') chart: ChartComponent;
     public chartOptions: Partial<ChartOptions>;
-    @ViewChild('dialogRef')
-    dialogRef!: TemplateRef<any>;
+    @ViewChild('dialogRef') dialogRef!: TemplateRef<any>;
 
     myFooList = ['Some Item', 'Item Second', 'Other In Row', 'What to write', 'Blah To Do'];
 
@@ -46,7 +45,7 @@ export class WatchlistComponent implements OnInit, AfterViewInit , OnDestroy {
   tabs = ['Nifty-50', 'Watchlist-1', 'Watchlist-2', 'Watchlist-3', 'Watchlist-4'];
     historyCandles: any;
     netPositionDetail: string;
-    totalShareinPositive: number;
+    totalShareinPositive;
     constructor(public fivePaisaService: FivePaisaService, private _snackBar: MatSnackBar , private matDialog: MatDialog) {}
 
     ngOnInit() {
@@ -80,6 +79,8 @@ export class WatchlistComponent implements OnInit, AfterViewInit , OnDestroy {
           this.netPositionDetail = localStorage.getItem('netPositionDetail');
            //console.log(this.netPositionDetail)
            this.totalShareinPositive= this.marketFeedList.filter(x => x.chgPcnt > 0).length;
+           localStorage.removeItem('totalShareinPositive');
+           localStorage.setItem('totalShareinPositive',this.totalShareinPositive);
         });
       }
 
@@ -92,13 +93,18 @@ export class WatchlistComponent implements OnInit, AfterViewInit , OnDestroy {
     }
 
     buy(row: MarketFeedData) {
-        this.fivePaisaService.OrderRequest(row, 'B').subscribe((data: any) => {
-            let message= data.responseData.body.message;
-            this._snackBar.open(message, 'Close', {
-              duration: 5000
-            });
+        if(row.lastRate<row.high){
+            this.fivePaisaService.OrderRequest(row, 'B').subscribe((data: any) => {
+                let message= data.responseData.body.message;
+                this._snackBar.open(message, 'Close', {
+                duration: 5000
+                });
 
-        });
+            });
+        }
+        else {
+            alert('wait for day high')
+        }
     }
 
     sell(row: MarketFeedData) {
@@ -111,7 +117,7 @@ export class WatchlistComponent implements OnInit, AfterViewInit , OnDestroy {
     }
 
     getHistory(row: MarketFeedData) {
-        this.fivePaisaService.History(row.token).subscribe((data: any) => {
+        this.fivePaisaService.History(row.token,'5m').subscribe((data: any) => {
             this.historyCandles = data.data.candles;
             this.historyCandles = this.historyCandles.map(x => ({ x: new Date(x[0]), y: [x[1],x[2],x[3],x[4]] }));
             this.chartOptions = {

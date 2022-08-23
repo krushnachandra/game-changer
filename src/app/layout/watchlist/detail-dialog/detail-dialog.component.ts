@@ -46,6 +46,39 @@ export class DetailDialogComponent implements OnInit {
     this.dialogRef.close({event:'Cancel'});
   }
 
+  getHistoryData(timeinterval) {
+    this.fivePaisaService.History(this.marketFeedData.token,timeinterval).subscribe((data: any) => {
+        this.historyCandles = data.data.candles;
+        this.historyCandles = this.historyCandles.map(x => ({ x: new Date(x[0]), y: [x[1],x[2],x[3],x[4]] }));
+        this.chartOptions = {
+            series: [
+              {
+                name: "candle",
+                data: this.historyCandles
+              }
+            ],
+            chart: {
+              type: 'candlestick',
+              height: 350
+            },
+            title: {
+              text: this.marketFeedData.symbol,
+              align: 'left'
+            },
+            xaxis: {
+              type: 'datetime',
+            },
+            yaxis: {
+              tooltip: {
+                enabled: true
+              }
+            },
+
+          };
+
+    });
+
+}
   ngOnInit() {
     const now = new Date().getHours();
       /**
@@ -66,36 +99,5 @@ export class DetailDialogComponent implements OnInit {
   }
 
   close() {}
-
-  getHistory(row: MarketFeedData) {
-    this.fivePaisaService.History(row.token).subscribe((data: any) => {
-        this.historyCandles = data.data.candles;
-        this.historyCandles = this.historyCandles.map(x => ({ x: new Date(x[0]), y: [x[1],x[2],x[3],x[4]] }));
-        this.chartOptions = {
-            series: [
-              {
-                name: "candle",
-                data: this.historyCandles
-              }
-            ],
-            chart: {
-              type: 'candlestick',
-              height: 350
-            },
-            title: {
-              text: row.symbol,
-              align: 'left'
-            },
-            xaxis: {
-              type: 'datetime',
-
-            },
-            yaxis: {
-              tooltip: {
-                enabled: true
-              }
-            }
-          };
-    });
 }
-}
+

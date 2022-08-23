@@ -117,15 +117,34 @@ export class FivePaisaService {
   }
 
   ModifyOrderRequest(orderData: OrderBookDetail): Observable<OrderRequestResponse> {
+    let price ;
+    if(orderData.slTriggerRate){
+        price= orderData.slTriggerRate;
+    }
+    else{
+        price= orderData.rate
+    }
     return this.http.get(this.baseUrl + 'ModifyOrderRequest?price=' + orderData.slTriggerRate + '&qty=' +
     orderData.qty + '&exchOrderID=' + orderData.exchOrderID)
     .pipe((data: any) => {
         return data;
     });
   }
-
+  ModifyStopLossOrder(orderData: OrderBookDetail): Observable<OrderRequestResponse> {
+    let price ;
+    if(orderData.slTriggerRate){
+        price= orderData.slTriggerRate;
+    }
+    else{
+        price= orderData.rate
+    }
+    return this.http.get(this.baseUrl + 'ModifyStopLossOrder?price=' + orderData.slTriggerRate + '&qty=' +
+    orderData.qty + '&exchOrderID=' + orderData.exchOrderID)
+    .pipe((data: any) => {
+        return data;
+    });
+  }
   exitPosition(scripCode,price,orderType,quantity): Observable<any> {
-    debugger;
     return this.http.get(this.baseUrl + 'ExitPosition?scripCode=' + scripCode + '&price=' + price + '&quantity=' + quantity + '&orderType=' + orderType)
     .pipe((data: any) => {
         return data;
@@ -137,7 +156,6 @@ export class FivePaisaService {
   }
 
   addStopLoss(scripCode,price,orderType,quantity): Observable<any> {
-    debugger;
     return this.http.get(this.baseUrl + 'StopLossOrderRequest?scripCode=' + scripCode + '&price=' + price  + '&quantity=' + quantity + '&orderType=' + orderType)
     .pipe((data: any) => {
         return data;
@@ -170,8 +188,8 @@ export class FivePaisaService {
         return data;
     });
   }
-  History(scriptcode): Observable<HistoryResponse> {
-    return this.http.get(this.baseUrl + 'Historical?scriptcode=' + scriptcode)
+  History(scriptcode, timeinterval='5m'): Observable<HistoryResponse> {
+    return this.http.get(this.baseUrl + 'Historical?scriptcode=' + scriptcode + '&timeinterval=' + timeinterval)
     .pipe((data: any) => {
         return data;
     });

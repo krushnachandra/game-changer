@@ -44,6 +44,7 @@ export class HeaderComponent implements OnInit {
     subject: any;
     received: any[];
     userName: string;
+    totalShareinPositive: string;
     constructor(private translate: TranslateService, public router: Router,private jwtService: JwtService, private fivePaisaService: FivePaisaService) {
         this.router.events.subscribe((val) => {
             if (val instanceof NavigationEnd && window.innerWidth <= 992 && this.isToggled()) {
@@ -54,28 +55,27 @@ export class HeaderComponent implements OnInit {
 
     ngOnInit() {
         this.pushRightClass = 'push-right';
-        this.userName = localStorage.getItem('userName')
+        this.userName = localStorage.getItem('userName');
+        this.totalShareinPositive = localStorage.getItem('totalShareinPositive');
         this.getMargins();
-        let socketUrl = 'wss://openfeed.5paisa.com/Feeds/api/chat?Value1=';
-        // tslint:disable-next-line:max-line-length
-        // subject = webSocket("wss://openfeed.5paisa.com/Feeds/api/chat?Value1=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjU2MTU5NDg1Iiwicm9sZSI6IkNsaWVudCIsIlN0YXRlIjoiIiwibmJmIjoxNjQ5NzM5ODcwLCJleHAiOjE2NDk3ODgxOTksImlhdCI6MTY0OTczOTg3MH0.8-PLuV7UbPVxCz0pywJFjmSMaM1yCVmYikmcTzNQvf0|56159485");
-       const token = this.jwtService.getToken();
-       const clientCode= '56159485';
-       socketUrl = socketUrl + token + '|' + clientCode;
-       this.subject = webSocket(socketUrl);
-       this.subject.subscribe(data => {
-             //this.data$= JSON.parse(data);
-             let data1 = data[0];
-             //console.log('message received: ' + data)
-             this.received=[];
-             this.received.push(data[0]);
-             this.received = this.received.map(u => u.Token !== data[0].Token ? u : data[0]);
+    //     let socketUrl = 'wss://openfeed.5paisa.com/Feeds/api/chat?Value1=';
+    //    const token = this.jwtService.getToken();
+    //    const clientCode= '56159485';
+    //    socketUrl = socketUrl + token + '|' + clientCode;
+    //    this.subject = webSocket(socketUrl);
+    //    this.subject.subscribe(data => {
+    //          //this.data$= JSON.parse(data);
+    //          let data1 = data[0];
+    //          //console.log('message received: ' + data)
+    //          this.received=[];
+    //          this.received.push(data[0]);
+    //          this.received = this.received.map(u => u.Token !== data[0].Token ? u : data[0]);
 
-         }, // Called whenever there is a message from the server.
-           err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
-           () => console.log('complete') // Called when connection is closed (for whatever reason).
-         );
-         this.subject.next(this.SocketRequest);
+    //      }, // Called whenever there is a message from the server.
+    //        err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
+    //        () => console.log('complete') // Called when connection is closed (for whatever reason).
+    //      );
+    //      this.subject.next(this.SocketRequest);
     }
 
     isToggled(): boolean {

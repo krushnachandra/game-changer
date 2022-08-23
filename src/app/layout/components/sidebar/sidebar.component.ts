@@ -1,5 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSort } from '@angular/material/sort';
@@ -20,6 +21,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     collapsed: boolean;
     showMenu: string;
     pushRightClass: string;
+    @ViewChild('dialogRef') dialogRef!: TemplateRef<any>;
     dataSource = new MatTableDataSource<any>([]);
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild('positionSort') sort: MatSort;
@@ -28,7 +30,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     dataSourceOrder = new MatTableDataSource<any>([]);
     @ViewChild(MatPaginator) paginatorOrder: MatPaginator;
     @ViewChild('orderSort') sortOrder: MatSort;
-    displayedColumnsOrders: string[] = [ 'scripName', 'buySell', 'qty', 'slTriggerRate', 'brokerOrderTime','orderStatus','reason' , 'action'];
+    displayedColumnsOrders: string[] = [ 'scripName', 'buySell', 'qty','rate', 'slTriggerRate', 'brokerOrderTime','orderStatus','reason' , 'action'];
     selection = new SelectionModel<NetPositionDetail>(true, []);
 
 
@@ -42,34 +44,36 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     PendingOrderBook: any;
     @ViewChild('firstNameInput') nameInputRef:ElementRef;
     pendingOrders: any;
+    clappingSound = '../../assets/sound/clapping.mp3';
+
     constructor(private translate: TranslateService, public router: Router,
-        public fivePaisaService: FivePaisaService, private _snackBar: MatSnackBar ) {
+        public fivePaisaService: FivePaisaService, private _snackBar: MatSnackBar , private matDialog: MatDialog) {
         this.router.events.subscribe((val) => {
             if (val instanceof NavigationEnd && window.innerWidth <= 992 && this.isToggled()) {
                 this.toggleSidebar();
             }
         });
     }
-    playAudio(){
-        let src = '../../assets/sound/clapping.mp3';
-        let audio = new Audio(src);
+    playAudio(audioName: string){
+        //let clapping = '../../assets/sound/clapping.mp3';
+        let audio = new Audio(this.clappingSound);
         audio.load();
         audio.play();
     }
 
     ngOnInit() {
-        //this.playAudio();
+        //this.playAudio(this.clappingSound);
         this.isActive = false;
         this.collapsed = false;
         this.showMenu = '';
         this.pushRightClass = 'push-right';
         this.getOrders();
-        this.getNetPositionNetWise();
+        //this.getNetPositionNetWise();
         const now = new Date().getHours();
         if (now >= 9 && now <= 16) {
            this.timerSubscription = timer(0, 5000).pipe(
              map(() => {
-              this.getOrders();
+              //this.getOrders();
               this.getNetPositionNetWise(); // load data contains the http request
              })
           ).subscribe();
@@ -121,11 +125,19 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     onLoggedout() {
         localStorage.removeItem('isLoggedin');
     }
+    openTempDialog(row: any) {
+
+    }
+      closeDialog() {
+        this.matDialog.closeAll();
+    }
     getNetPositionNetWise() {
         this.fivePaisaService.NetPositionNetWise().subscribe((data: any) => {
-            this.getNetPosition = data.responseData.body.netPositionDetail;
+
+            this.getNetPosition = data.responseData.body.netPositionDetail
+            //.filter(obj => obj.netQty!=0);;
             this.dataSource.data =this.getNetPosition;
-            localStorage.setItem('netPositionDetail', JSON.stringify(data.responseData.body.netPositionDetail));
+            localStorage.setItem('netPositionDetail', JSON.stringify(this.getNetPosition));
             let stopLossRate=0;
 
             // fetch all the pending orders from local storage
@@ -180,7 +192,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
                 if (element.sellQty > element.buyQty) {
 
                     this.totalProfitAndLoss += element.netQty * (element.ltp - element.sellAvgRate) + element.bookedPL;
-
                     element.OrderType="S"
 
                     const profitPoints =  element.sellAvgRate - element.ltp;
@@ -192,11 +203,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
                     if (this.percentageOfProfit < -2) {
                         this.exitPosition(element);
                     }
-
-                    if (this.percentageOfProfit < 0.5) {
-                        this.trailStopLossOrderFromPosition(element);
+                    if (this.percentageOfProfit > 0.5) {
+                       this.trailStopLossOrderFromPosition(element);
                     }
-
                     element.profitOrLoss = (profitPoints * element.netQty).toFixed(2);
                     let trailSL = 0;
                     const factor = profitPoints / 5;
@@ -207,6 +216,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
                             if (stopLossRate > trailSL) {
                                 alert(trailSL);
                                //this.TrailStopLossOrder(trailSL);
+                               //this.trailStopLossOrderFromPosition(element);
                             }
                          }
                     }
@@ -219,35 +229,64 @@ export class SidebarComponent implements OnInit, AfterViewInit {
             this.totalProfitAndLoss = +this.totalProfitAndLoss.toFixed(2);
           });
     }
-
+    // modify stoploss order
     trailStopLossOrder(orderBookDetail: OrderBookDetail) {
-    this.fivePaisaService.CancelOrderRequest(orderBookDetail.exchOrderID).subscribe((data: any) => {
-        this.fivePaisaService.addStopLoss(orderBookDetail.scripCode,orderBookDetail.slTriggerRate,orderBookDetail.buySell,orderBookDetail.qty).subscribe((data: any) => {
+        this.fivePaisaService.CancelOrderRequest(orderBookDetail.exchOrderID).subscribe((data: any) => {
+            setTimeout(() =>
+            {
+                this.addStopLoss(orderBookDetail.scripCode,orderBookDetail.slTriggerRate + 1,orderBookDetail.buySell,orderBookDetail.qty);
+            },
+            3000);
+      });
+
+    }
+
+    ModifyStopLossOrder(orderBookDetail: OrderBookDetail) {
+        this.fivePaisaService.ModifyStopLossOrder(orderBookDetail).subscribe((data: any) => {
             let message= data.responseData.body.message;
             this._snackBar.open(message, 'Close', {
               duration: 5000
             });
-       });
-      });
+          });
     }
 
     trailStopLossOrderFromPosition(netPositionDetail: NetPositionDetail) {
-        if (!this.pendingOrders) {
+        if (this.pendingOrders.length>0) {
             this.OrderToBeModify = this.pendingOrders.find(x => x.scripCode === netPositionDetail.scripCode);
-            if (this.OrderToBeModify !== undefined) {
-                this.fivePaisaService.CancelOrderRequest(this.OrderToBeModify.exchOrderID).subscribe((data: any) => {
-                    // stoploss price will be slTriggerRate + trail percentage 0.5
-                    this.fivePaisaService.addStopLoss(this.OrderToBeModify.scripCode,this.OrderToBeModify.slTriggerRate,this.OrderToBeModify.buySell,this.OrderToBeModify.qty).subscribe((data: any) => {
-                        let message= data.responseData.body.message;
-                        this._snackBar.open(message, 'Close', {
-                          duration: 5000
-                        });
-                   });
-                });
+
+            // check the sltrigger price is less than the current sl trigger price
+            let previousStoplossPrice;
+            previousStoplossPrice = this.OrderToBeModify.sMOSLTriggerRate;
+
+            if(this.OrderToBeModify.buySell=="B"){
+                if(previousStoplossPrice < netPositionDetail.ltp){
+                    this.fivePaisaService.CancelOrderRequest(this.OrderToBeModify.exchOrderID).subscribe((data: any) => {
+                        setTimeout(() =>
+                        {
+                             // stoploss price will be slTriggerRate + trail percentage 0.5
+                            this.addStopLoss(this.OrderToBeModify.scripCode,netPositionDetail.ltp,this.OrderToBeModify.buySell,this.OrderToBeModify.qty);
+                        },
+                        1000);
+                    });
+                }
+                else {
+                    this.exitPosition(netPositionDetail);
+                }
             }
-            else {
-                //stopLossRate = 0;
-                // place stop loss order
+            if(this.OrderToBeModify.buySell=="S"){
+                if(previousStoplossPrice > netPositionDetail.ltp){
+                    this.fivePaisaService.CancelOrderRequest(this.OrderToBeModify.exchOrderID).subscribe((data: any) => {
+                        setTimeout(() =>
+                        {
+                             // stoploss price will be slTriggerRate + trail percentage 0.5
+                            this.addStopLoss(this.OrderToBeModify.scripCode,netPositionDetail.ltp,this.OrderToBeModify.buySell,this.OrderToBeModify.qty);
+                        },
+                        1000);
+                    });
+                }
+                else {
+                    this.exitPosition(netPositionDetail);
+                }
             }
           }
     }
@@ -255,30 +294,39 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     // add a stop loss for that position
     addStopLoss (scripCode,price,orderType,quantity) {
         //let scripCode,price,orderType,quantity;
-
+        if (orderType='S') {
+            quantity=  Math.abs(quantity);
+        }
         this.fivePaisaService.addStopLoss(scripCode,price,orderType,quantity).subscribe((data: any) => {
             let message= data.responseData.body.message;
             this._snackBar.open(message, 'Close', {
               duration: 5000
             });
+            this.getOrders();
        });
+
     }
 
     // exit this position
-    exitPosition(positionDetail:NetPositionDetail) {
+    exitPosition(netPositionDetail:NetPositionDetail) {
         let qty;
-        if (positionDetail.OrderType='S') {
-            qty=  Math.abs(positionDetail.netQty);
+        if (netPositionDetail.OrderType='S') {
+            qty=  Math.abs(netPositionDetail.netQty);
         }
         else {
-            qty= positionDetail.netQty
+            qty= netPositionDetail.netQty
         }
-        this.fivePaisaService.exitPosition(positionDetail.scripCode,positionDetail.ltp,positionDetail.OrderType,qty).subscribe((data: any) => {
+        this.fivePaisaService.exitPosition(netPositionDetail.scripCode,netPositionDetail.ltp,netPositionDetail.OrderType,qty).subscribe((data: any) => {
             let message= data.responseData.body.message;
             this._snackBar.open(message, 'Close', {
               duration: 5000
             });
        });
+       if (this.pendingOrders.length>0) {
+        this.OrderToBeModify = this.pendingOrders.find(x => x.scripCode === netPositionDetail.scripCode);
+        this.CancelOrderRequest(this.OrderToBeModify);
+       }
+       this.getOrders();
     }
     // this is used when position wants to reverse instead of exit
     reversePosition(trailSlPrice: number) {
@@ -294,7 +342,7 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     getOrders() {
         this.fivePaisaService.OrderBook().subscribe((data: any) => {
             this.OrderBookDetails = data.responseData.body.orderBookDetail
-             .filter(obj => obj.orderStatus === 'Pending' || obj.orderStatus === 'Modified' || obj.orderStatus === 'Fully Executed');
+             .filter(obj => obj.orderStatus === 'Pending' || obj.orderStatus === 'Modified');
              this.dataSourceOrder.data= this.OrderBookDetails;
              this.dataSource.sort = this.sortOrder;
              this.PendingOrderBook = this.OrderBookDetails.filter(obj => obj.orderStatus === 'Pending' || obj.orderStatus === 'Modified');
@@ -315,7 +363,6 @@ export class SidebarComponent implements OnInit, AfterViewInit {
     CancelOrderRequest(orderBookDetail: OrderBookDetail)  {
         this.fivePaisaService.CancelOrderRequest(orderBookDetail.exchOrderID).subscribe((data: any) => {
             let message= data.responseData.body.message;
-
             this._snackBar.open(message, 'Close', {
               duration: 5000
             });

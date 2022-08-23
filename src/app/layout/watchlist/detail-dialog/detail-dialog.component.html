@@ -11,4 +11,9 @@
 
 <mat-dialog-actions>
     <button class="mat-raised-button" (click)="closeDialog()">Close</button>
+    <button class="mat-raised-button" (click)="getHistoryData('5m')">5m</button>
+    <button class="mat-raised-button" (click)="getHistoryData('15m')">15m</button>
+    <button class="mat-raised-button" (click)="getHistoryData('30m')">30m</button>
+    <button class="mat-raised-button" (click)="getHistoryData('60m')">1h</button>
+    <button class="mat-raised-button" (click)="getHistoryData('1d')">1d</button>
 </mat-dialog-actions>

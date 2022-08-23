@@ -1,19 +1,20 @@
 <nav class="navbar navbar-expand-lg fixed-top">
 
     <!-- <a class="navbar-brand" href="#"><img class="user-avatar" src="assets/images/trisul.png" style="transform: rotate(90deg);height: 70px;width: 80px;margin-left: -19px;" />  </a> -->
-
-    Margin : {{Margin}}
-    <a class="navbar-brand " href="#"><img class="vert-move" src="assets/images/bear.png" style="height: 70px;width: 80px;margin-top: 10px;" />  </a>
-    <a class="navbar-brand" href="#"><img class="user-avatar vert-move-left" src="assets/images/bull-skull.png" style="height: 70px;width: 80px;margin-top: 10px;" />  </a>
+    <div class="navbar-brand "><img class="vert-move" src="assets/images/bear.png" style="height: 70px;width: 80px;" />  </div>
+    <h2 style="color:#fff;font-size: 2rem;margin: 5px 0 0 -100px;">The Game Changer</h2>
+    <div class="navbar-brand" ><img class="user-avatar vert-move-left" src="assets/images/bull-skull.png" style="height: 70px;width: 80px;margin-left: -100px;" />  </div>
     <!-- {{ received | json}} -->
     <button (click)="toggleSidebar()" class="navbar-toggler" type="button">
         <span class="navbar-toggler-icon"></span>
         <i aria-hidden="true" class="fa fa-bars text-muted"></i>
     </button>
+
+    <h3> <button mat-mini-fab color="success">{{totalShareinPositive}}  </button>    <button mat-mini-fab color="warn" > {{50 - +totalShareinPositive}}</button> </h3>
+
     <div class="collapse navbar-collapse">
 
         <ul class="navbar-nav ml-auto">
-
 
             <li class="nav-item dropdown" ngbDropdown>
                 <a class="nav-link" href="javascript:void(0)" ngbDropdownToggle>
@@ -37,11 +38,14 @@
                         &nbsp;
                         <span>holdings</span>
                     </a>
-                           <a  [routerLink]="['/positions']" class="dropdown-item">
+                    <a  [routerLink]="['/positions']" class="dropdown-item">
                         <i class="fa fa-file-o"></i>&nbsp;
                         <span>{{ 'Positions' | translate }}</span>
                     </a>
-
+                    <a  class="dropdown-item">
+                        <i class="fa fa-money"></i>&nbsp;
+                        <span>{{ Margin }}</span>
+                    </a>
                     <a (click)="onLoggedout()" [routerLink]="['/login']" class="dropdown-item">
                         <i class="fa fa-fw fa-power-off"></i> {{ 'Log Out' | translate }}
                     </a>
