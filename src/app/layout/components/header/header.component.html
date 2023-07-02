@@ -1,31 +1,39 @@
-<nav class="navbar navbar-expand-lg fixed-top">
-
+<nav class="navbar navbar-expand-lg fixed-top" [ngStyle]="{'background-color':+totalShareinPositive < 25 ? 'red':'green'}">
     <!-- <a class="navbar-brand" href="#"><img class="user-avatar" src="assets/images/trisul.png" style="transform: rotate(90deg);height: 70px;width: 80px;margin-left: -19px;" />  </a> -->
-    <div class="navbar-brand "><img class="vert-move" src="assets/images/bear.png" style="height: 70px;width: 80px;" />  </div>
-    <h2 style="color:#fff;font-size: 2rem;margin: 5px 0 0 -100px;">The Game Changer</h2>
-    <div class="navbar-brand" ><img class="user-avatar vert-move-left" src="assets/images/bull-skull.png" style="height: 70px;width: 80px;margin-left: -100px;" />  </div>
+    <div class="navbar-brand">
+        <img class="vert-move" src="assets/images/bear.png" style="height: 50px; width: 60px;" />
+    </div>
+    <h2 style="color: #fff; font-size: 2rem; margin: 5px 0 0 -85px;"> Game Changer</h2>
+    <div class="navbar-brand">
+        <img
+            class="user-avatar vert-move-left"
+            src="assets/images/bull-skull.png"
+            style="height: 50px; width: 60px; margin-left: -100px;"
+        />
+    </div>
     <!-- {{ received | json}} -->
     <button (click)="toggleSidebar()" class="navbar-toggler" type="button">
         <span class="navbar-toggler-icon"></span>
         <i aria-hidden="true" class="fa fa-bars text-muted"></i>
     </button>
 
-    <h3> <button mat-mini-fab color="success">{{totalShareinPositive}}  </button>    <button mat-mini-fab color="warn" > {{50 - +totalShareinPositive}}</button> </h3>
+    <!-- <h3>
+        <button mat-mini-fab color="success">{{ totalShareinPositive }}</button>
+        <button mat-mini-fab color="warn">{{ 50 - +totalShareinPositive }}</button>
+    </h3> -->
 
     <div class="collapse navbar-collapse">
-
         <ul class="navbar-nav ml-auto">
-
             <li class="nav-item dropdown" ngbDropdown>
                 <a class="nav-link" href="javascript:void(0)" ngbDropdownToggle>
-                    <i class="fa fa-user"></i> {{userName}} <b class="caret"></b>
+                    <i class="fa fa-user"></i> {{ userName }} <b class="caret"></b>
                 </a>
                 <div class="dropdown-menu-right" ngbDropdownMenu>
-                    <a  class="dropdown-item" routerLink="/dashboard">
+                    <a class="dropdown-item" routerLink="/dashboard">
                         <i class="fa fa-fw fa-dashboard"></i>&nbsp;
                         <span>{{ 'Dashboard' | translate }}</span>
                     </a>
-                    <a  [routerLink]="['/orders']" class="dropdown-item">
+                    <a [routerLink]="['/orders']" class="dropdown-item">
                         <i class="fa fa-fw fa-table"></i>&nbsp;
                         <span>{{ 'Orders' | translate }}</span>
                     </a>
@@ -34,15 +42,15 @@
                         <span>watchlist</span>
                     </a>
                     <a [routerLink]="['/holdings']" class="dropdown-item">
-                          <i class="fa fa-solid fa-briefcase"></i>
+                        <i class="fa fa-solid fa-briefcase"></i>
                         &nbsp;
                         <span>holdings</span>
                     </a>
-                    <a  [routerLink]="['/positions']" class="dropdown-item">
+                    <a [routerLink]="['/positions']" class="dropdown-item">
                         <i class="fa fa-file-o"></i>&nbsp;
                         <span>{{ 'Positions' | translate }}</span>
                     </a>
-                    <a  class="dropdown-item">
+                    <a class="dropdown-item">
                         <i class="fa fa-money"></i>&nbsp;
                         <span>{{ Margin }}</span>
                     </a>

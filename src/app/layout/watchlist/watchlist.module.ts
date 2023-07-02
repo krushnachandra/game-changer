@@ -4,6 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
+import { HighchartsChartModule } from 'highcharts-angular';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { MaterialModule } from '../../material.module';
 
@@ -15,7 +16,7 @@ import { WatchlistComponent } from './watchlist.component';
 
 @NgModule({
     imports: [CommonModule, WatchlistRoutingModule, PageHeaderModule, MatTableModule, MatPaginatorModule, MatButtonModule
-        , MaterialModule, MatDialogModule,NgApexchartsModule],
+        , MaterialModule, MatDialogModule, NgApexchartsModule, HighchartsChartModule],
     declarations: [WatchlistComponent, DetailDialogComponent],
     entryComponents: [DetailDialogComponent]
 })

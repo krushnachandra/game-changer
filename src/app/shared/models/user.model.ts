@@ -67,7 +67,7 @@ export interface NetPositionDetail {
   sellQty: number;
   sellValue: number;
   slider: Slider;
-  OrderType:string;
+  OrderType: string;
 }
 
 export interface Slider {
@@ -161,7 +161,7 @@ export interface OrderBookDetail {
   sMOSLTriggerRate: number;
   sMOTrailingSL: number;
   scripCode: number;
-  scripName: string;
+  scriptName: string;
   terminalId: number;
   tradedQty: number;
   withSL: string;

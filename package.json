@@ -35,6 +35,8 @@
     "core-js": "3.21.0",
     "file-saver": "^2.0.5",
     "font-awesome": "4.7.0",
+    "highcharts": "^10.2.0",
+    "highcharts-angular": "^3.0.0",
     "ng-apexcharts": "^1.7.1",
     "ng2-charts": "3.0.8",
     "rxjs": "7.5.4",

@@ -1,159 +1,176 @@
 <nav [ngClass]="{ sidebarPushRight: isActive, collapsed: collapsed }" class="sidebar">
-    <table mat-table [dataSource]="dataSource" matSortActive="percentageOfProfit" matSort matSortDirection="desc" #positionSort="matSort"  style="width: 100%; overflow: auto;">
+    <table
+        mat-table
+        [dataSource]="dataSource"
+        matSortActive="percentageOfProfit"
+        matSort
+        matSortDirection="desc"
+        #positionSort="matSort"
+        class="mat-table-background"
+    >
         <!-- <ng-container matColumnDef="index">
           <mat-header-cell *matHeaderCellDef> Index </mat-header-cell>
           <mat-cell *matCellDef="let element; let i = index;">{{i}}</mat-cell>
         </ng-container> -->
-        <ng-container matColumnDef="select">
+        <!-- <ng-container matColumnDef="select">
             <th mat-header-cell *matHeaderCellDef>
-              <mat-checkbox (change)="$event ? toggleAllRows() : null"
-                            [checked]="selection.hasValue() && isAllSelected()"
-                            [indeterminate]="selection.hasValue() && !isAllSelected()"
-                            [aria-label]="checkboxLabel()">
-              </mat-checkbox>
-              <button color="primary" mat-mini-fab>Exit</button>
+                <mat-checkbox
+                    (change)="$event ? toggleAllRows() : null"
+                    [checked]="selection.hasValue() && isAllSelected()"
+                    [indeterminate]="selection.hasValue() && !isAllSelected()"
+                    [aria-label]="checkboxLabel()"
+                >
+                </mat-checkbox>
+                <button color="primary" class="small make-green">Exit</button>
             </th>
             <td mat-cell *matCellDef="let row">
-              <mat-checkbox (click)="$event.stopPropagation()"
-                            (change)="$event ? selection.toggle(row) : null"
-                            [checked]="selection.isSelected(row)"
-                            [aria-label]="checkboxLabel(row)">
-              </mat-checkbox>
+                <mat-checkbox
+                    (click)="$event.stopPropagation()"
+                    (change)="$event ? selection.toggle(row) : null"
+                    [checked]="selection.isSelected(row)"
+                    [aria-label]="checkboxLabel(row)"
+                >
+                </mat-checkbox>
             </td>
-          </ng-container>
+        </ng-container> -->
         <ng-container matColumnDef="scripName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
-          <td mat-cell *matCellDef="let element">
-            {{element.scripName}}
-          </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.scripName }}
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="OrderType">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header >B/S </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>B/S</th>
             <td mat-cell *matCellDef="let element">
-                {{element.OrderType}}
+                {{ element.OrderType }}
             </td>
-          </ng-container>
-          <ng-container matColumnDef="netQty">
-            <th mat-header-cell *matHeaderCellDef  mat-sort-header>Quantity </th>
+        </ng-container>
+        <ng-container matColumnDef="netQty">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantity</th>
             <td mat-cell *matCellDef="let element">
-                {{element.netQty}}
+                {{ element.netQty }}
             </td>
-          </ng-container>
-          <ng-container matColumnDef="ltp">
-            <th mat-header-cell *matHeaderCellDef  mat-sort-header>ltp </th>
+        </ng-container>
+        <ng-container matColumnDef="ltp">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ltp</th>
             <td mat-cell *matCellDef="let element">
-                {{element.ltp}}
+                {{ element.ltp }}
             </td>
-          </ng-container>
+        </ng-container>
         <ng-container matColumnDef="percentageOfProfit">
-          <th mat-header-cell *matHeaderCellDef  mat-sort-header>% Of PnL </th>
-          <td mat-cell *matCellDef="let element">
-             {{element.percentageOfProfit}}
-          </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>% Of PnL</th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.percentageOfProfit }}
+            </td>
         </ng-container>
         <ng-container matColumnDef="bookedPL">
-            <th mat-header-cell *matHeaderCellDef  mat-sort-header>BookedPL </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>BookedPL</th>
             <td mat-cell *matCellDef="let element">
-                {{element.bookedPL}}
+                {{ element.bookedPL }}
             </td>
-          </ng-container>
+        </ng-container>
 
-
-          <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef> Action   </th>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
             <td mat-cell *matCellDef="let element">
                 <!-- <button  mat-mini-fab color="primary"> <mat-icon>visibility</mat-icon></button>
                 <button  mat-mini-fab color="primary">Swap </button> -->
-                <button mat-mini-fab (click)="addStopLoss(element.scripCode,element.ltp,element.OrderType,element.netQty)"  mat-button color="primary"> SL</button>
-                <button (click)="trailStopLossOrderFromPosition(element)"  mat-mini-fab color="primary"> Trail</button>
+                <button class="small make-green" (click)="addStopLoss(element.scripCode, element.ltp, element.OrderType, element.netQty)" color="primary">SL</button>
+                <button (click)="trailStopLossOrderFromPosition(element)" class="small make-green" color="primary">Trail</button>
                 <!-- <button mat-mini-fab   mat-button color="primary"> Add</button>
                 <button  mat-button mat-mini-fab color="primary"> Sub.</button> -->
 
+                <button class="small make-green" (click)="charModalOpen(element)">view</button>
 
-                <button (click)="exitPosition(element)" mat-mini-fab color="primary"> <mat-icon>close</mat-icon></button>
-
+                <button (click)="exitPosition(element)" class="small make-green" color="primary">Exit</button>
             </td>
-          </ng-container>
-
+        </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
-
-      </table>
-      <table mat-table [dataSource]="dataSourceOrder" matSortActive="brokerOrderTime" matSort matSortDirection="desc" #orderSort="matSort" style="width: 100%; max-height: 500px;overflow: auto;">
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <table
+        mat-table
+        [dataSource]="dataSourceOrder"
+        matSortActive="brokerOrderTime"
+        matSort
+        matSortDirection="desc"
+        #orderSort="matSort"
+        class="mat-table-background"
+    >
         <!-- <ng-container matColumnDef="index">
           <mat-header-cell *matHeaderCellDef> Index </mat-header-cell>
           <mat-cell *matCellDef="let element; let i = index;">{{i}}</mat-cell>
         </ng-container> -->
         <ng-container matColumnDef="scripName">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name</th>
-          <td mat-cell *matCellDef="let element">
-            {{element.scripName}}
-          </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.scripName }}
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="buySell">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header >B/S </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>B/S</th>
             <td mat-cell *matCellDef="let element">
-                {{element.buySell}}
+                {{ element.buySell }}
             </td>
-          </ng-container>
-          <ng-container matColumnDef="qty">
-            <th mat-header-cell *matHeaderCellDef  mat-sort-header>Quantity </th>
+        </ng-container>
+        <ng-container matColumnDef="qty">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Quantity</th>
+            <td mat-cell *matCellDef="let element">{{ element.pendingQty }} | {{ element.qty }}</td>
+        </ng-container>
+        <ng-container matColumnDef="rate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Rate</th>
             <td mat-cell *matCellDef="let element">
-                {{element.pendingQty}} | {{element.qty}}
+                {{ element.rate }}
             </td>
-          </ng-container>
-          <ng-container matColumnDef="rate">
-            <th mat-header-cell *matHeaderCellDef  mat-sort-header>Rate </th>
+        </ng-container>
+        <ng-container matColumnDef="slTriggerRate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>SL</th>
             <td mat-cell *matCellDef="let element">
-                {{element.rate}}
+                {{ element.slTriggerRate }}
             </td>
-          </ng-container>
-          <ng-container matColumnDef="slTriggerRate">
-            <th mat-header-cell *matHeaderCellDef  mat-sort-header>SL </th>
-            <td mat-cell *matCellDef="let element">
-                {{element.slTriggerRate}}
-            </td>
-          </ng-container>
+        </ng-container>
         <ng-container matColumnDef="brokerOrderTime">
-          <th mat-header-cell *matHeaderCellDef  mat-sort-header>Time</th>
-          <td mat-cell *matCellDef="let element">
-             {{element.brokerOrderTime | date: 'h:mm a'}}
-          </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Time</th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.brokerOrderTime | date: 'h:mm a' }}
+            </td>
         </ng-container>
         <ng-container matColumnDef="orderStatus">
-            <th mat-header-cell *matHeaderCellDef  mat-sort-header>Status </th>
-            <td mat-cell *matCellDef="let element" [ngClass]="element.orderStatus ==='Fully Executed' ? 'success' : ''">
-               {{element.orderStatus}}
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Status</th>
+            <td
+                mat-cell
+                *matCellDef="let element"
+                [ngClass]="element.orderStatus === 'Fully Executed' ? 'success' : ''"
+            >
+                {{ element.orderStatus }}
             </td>
-          </ng-container>
-          <ng-container matColumnDef="reason">
-            <th mat-header-cell *matHeaderCellDef  mat-sort-header>Reason </th>
-            <td mat-cell *matCellDef="let element" style="width: 190px">
-               {{element.reason}}
+        </ng-container>
+        <ng-container matColumnDef="reason">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Reason</th>
+            <td mat-cell *matCellDef="let element" >
+                {{ element.reason }}
             </td>
-          </ng-container>
+        </ng-container>
 
-          <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef> Action  </th>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
             <td mat-cell *matCellDef="let element">
-
                 <!-- <button (click)="ModifyStopLossOrder(element)"  mat-mini-fab color="primary">Trail</button> -->
 
-                <!-- <button (click)="trailStopLossOrder(element)"  mat-mini-fab color="primary">Trail</button> -->
-                <button (click)="ModifyOrderRequest(element)"  mat-mini-fab color="primary"> <mat-icon>edit</mat-icon></button>
-                <button (click)="CancelOrderRequest(element)" mat-mini-fab color="primary"> <mat-icon>close</mat-icon></button>
+                <!-- <button (click)="ModifyStopLossOrder(element.buySell,element.scripCode,element.slTriggerRate,element.qty,element.exchOrderID)"  class="small make-green">Trail</button> -->
+                <button (click)="ModifyOrderRequest(element)" class="small make-green" color="primary">AtMarket</button>
+                <button class="small make-green" (click)="charModalOpen(element)">view</button>
+                <button (click)="CancelOrderRequest(element)" class="small make-green" color="primary">Cancel</button>
             </td>
-          </ng-container>
-
+        </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumnsOrders"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsOrders;" ></tr>
-      </table>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsOrders"></tr>
+    </table>
     <div (click)="toggleCollapsed()" [ngClass]="{ collapsed: collapsed }" class="toggle-button">
         <i class="fa fa-fw fa-angle-double-{{ collapsed ? 'right' : 'left' }}"></i>&nbsp;
     </div>
-
 </nav>

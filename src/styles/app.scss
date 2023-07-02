@@ -93,4 +93,21 @@ button[mat-mini-fab] {
    .mat-tab-label {
     height: 25px !important;
    }
-
+   button {
+    background: #4285F4;
+    color: white;
+    height: auto;
+    width: auto;
+  }
+   button.small {
+    margin-right: 1vw;
+    font-size: 9px;
+    line-height: 18px;
+  }
+  .mat-cell, .mat-footer-cell {
+    color: white;
+    border-bottom-style: solid 1px;
+ }
+ .mat-table-background {
+    width: 100%; overflow: auto; background-color: black;
+}
